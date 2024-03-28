@@ -2,7 +2,7 @@
 
 This example shows how to use the new [Single Data Fetch RFC](https://github.com/remix-run/remix/discussions/7640) coming in Remix v2.19.
 
-⚡️ StackBlitz https://stackblitz.com/edit/remix-run-remix-3phtht?file=README.md
+⚡️ StackBlitz https://stackblitz.com/github/kiliman/remix-single-fetch
 
 ## Configuration
 
@@ -71,3 +71,13 @@ export default function Component() {
 
 To redirect from a loader or action, use `throw redirect()` instead of returning.
 This will ensure that the return type is correct for type inference.
+
+### Event Source
+
+You can continue to use Event Source responses even with Single Data Fetch. The
+example shows how you can do this. I'm using the `remix-utils` implementation. I
+had to inline the `timers.wait` function since it was leaking abort listeners.
+
+NOTE: The event source `data` payload must be a `string`, so the `Date` is
+returned as an ISO string, which the reader parses back into a date. I plan on
+hooking into the `turbo-stream` encode/decode process to support native types.
