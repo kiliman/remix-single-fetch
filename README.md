@@ -1,36 +1,68 @@
-# Welcome to Remix + Vite!
+# Remix Single Data Fetch typed data
 
-📖 See the [Remix docs](https://remix.run/docs) and the [Remix Vite docs](https://remix.run/docs/en/main/future/vite) for details on supported features.
+This example shows how to use the new [Single Data Fetch RFC](https://github.com/remix-run/remix/discussions/7640) coming in Remix v2.19.
 
-## Development
+⚡️ StackBlitz https://stackblitz.com/edit/remix-run-remix-3phtht?file=README.md
 
-Run the Vite dev server:
+## Configuration
 
-```shellscript
-npm run dev
+First, enable the `future` flag for this feature in _vite.config.ts_
+
+```ts
+export default defineConfig({
+  plugins: [
+    remix({
+      future: {
+        unstable_singleFetch: true,
+      },
+    }),
+    tsconfigPaths(),
+  ],
+});
 ```
 
-## Deployment
+## Returning data
 
-First, build your app for production:
+No, in your `loader` and `action`, instead of using the `json` utility to return data, simply return a _naked_ object.
 
-```sh
-npm run build
+```diff
+- return json({ id: 123 })
++ return { id: 123 }
 ```
 
-Then run the app in production mode:
+In addition to returning all loader data in a single request, this feature will
+stream native results automatically. This includes native types like `Date`, `BigInt`,
+`Map`, `Set`, and even `Promise` values. You no longer need to use the `defer` utility
+to return promises.
 
-```sh
-npm start
+See [turbo-stream](https://github.com/jacob-ebey/turbo-stream) for more details.
+
+```ts
+export function loader() {
+  return {
+    fastData: { message: "This is fast data", today: new Date() },
+    slowData: new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
+      return { message: "This is slow data", tomorrow: new Date() };
+    }),
+  };
+}
 ```
 
-Now you'll need to pick a host to deploy it to.
+### Using data
 
-### DIY
+The current `useLoaderData` and `useActionData` hooks currently expect the result to be JSON objects, so native types like `Date` will be treated as `string` via IntelliSense, but it is still actually a `Date`.
 
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
+To make sure your types are accurate, I've created helper functions that return the correct type (`~/hooks`)
 
-Make sure to deploy the output of `npm run build`
+- `useTypedLoaderData`
+- `useTypedActionData`
+- `useTypedRouteLoaderData`
 
-- `build/server`
-- `build/client`
+```ts
+export default function Component() {
+  const loaderData = useTypedLoaderData<typeof loader>();
+  const actionData = useTypedActionData<typeof action>();
+  const rootData = useTypedRouteLoaderData<typeof rootLoader>("root");
+  //...
+}
+```
