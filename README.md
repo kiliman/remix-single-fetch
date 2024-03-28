@@ -23,7 +23,7 @@ export default defineConfig({
 
 ## Returning data
 
-No, in your `loader` and `action`, instead of using the `json` utility to return data, simply return a _naked_ object.
+Now, in your `loader` and `action`, instead of using the `json` utility to return data, simply return a _naked_ object.
 
 ```diff
 - return json({ id: 123 })
@@ -50,7 +50,7 @@ export function loader() {
 
 ### Using data
 
-The current `useLoaderData` and `useActionData` hooks currently expect the result to be JSON objects, so native types like `Date` will be treated as `string` via IntelliSense, but it is still actually a `Date`.
+The `useLoaderData` and `useActionData` hooks currently expect the result to be JSON objects, so native types like `Date` will be treated as `string` via IntelliSense, but it is still actually a `Date`.
 
 To make sure your types are accurate, I've created helper functions that return the correct type (`~/hooks`)
 
