@@ -1,6 +1,6 @@
 # Remix Single Data Fetch typed data
 
-This example shows how to use the new [Single Data Fetch RFC](https://github.com/remix-run/remix/discussions/7640) coming in Remix v2.19.
+This example shows how to use the new [Single Data Fetch RFC](https://github.com/remix-run/remix/discussions/7640) coming in Remix v2.9.
 
 ⚡️ StackBlitz https://stackblitz.com/github/kiliman/remix-single-fetch
 
