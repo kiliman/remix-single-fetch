@@ -19,6 +19,9 @@ export default function Index() {
         <li>
           <Link to="defer">Defer</Link>
         </li>
+        <li>
+          <Link to="redirect">Redirect</Link>
+        </li>
       </ul>
     </div>
   );

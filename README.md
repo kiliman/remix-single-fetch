@@ -66,3 +66,8 @@ export default function Component() {
   //...
 }
 ```
+
+### Redirects
+
+To redirect from a loader or action, use `throw redirect()` instead of returning.
+This will ensure that the return type is correct for type inference.
