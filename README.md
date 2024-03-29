@@ -72,12 +72,23 @@ export default function Component() {
 To redirect from a loader or action, use `throw redirect()` instead of returning.
 This will ensure that the return type is correct for type inference.
 
-### Event Source
+### Typed Event Source
 
-You can continue to use Event Source responses even with Single Data Fetch. The
-example shows how you can do this. I'm using the `remix-utils` implementation. I
-had to inline the `timers.wait` function since it was leaking abort listeners.
+You can continue to use Event Source responses even with Single Data Fetch.
 
-NOTE: The event source `data` payload must be a `string`, so the `Date` is
-returned as an ISO string, which the reader parses back into a date. I plan on
-hooking into the `turbo-stream` encode/decode process to support native types.
+To use native types like `Date` in your event source payload, use the `encode`
+function from `~/turbo`. Then, in your route, use the `useTypedEventSource` hook
+to decode the value back to its native type.
+
+```ts
+// routes/sse.time.tsx
+type TimeEventType = Date;
+
+send({ event: "time", data: await encode<TimeEventType>(new Date()) });
+
+// routes/eventsource.tsx
+const time = useTypedEventSource<TimeEventType>("/sse/time", {
+  //  ^? const time: Date | null
+  event: "time",
+});
+```

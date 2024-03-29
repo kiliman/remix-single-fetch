@@ -1,13 +1,16 @@
 // app/routes/sse.time.ts
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { eventStream } from "remix-utils/sse/server";
+import { encode } from "~/turbo";
+
+export type TimeEventType = Date;
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return eventStream(request.signal, (send, abort) => {
     async function run() {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for await (const _ of interval(1000, { signal: request.signal })) {
-        send({ event: "time", data: new Date().toISOString() });
+        send({ event: "time", data: await encode<TimeEventType>(new Date()) });
       }
     }
     run();

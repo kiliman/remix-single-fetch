@@ -20,7 +20,7 @@ export default function Index() {
           <Link to="defer">Defer</Link>
         </li>
         <li>
-          <Link to="eventsource">Event Source</Link>
+          <Link to="eventsource">Typed Event Source</Link>
         </li>
         <li>
           <Link to="redirect">Redirect</Link>

@@ -1,9 +1,10 @@
-import { useEventSource } from "remix-utils/sse/react";
+import { useTypedEventSource } from "~/hooks";
+import { TimeEventType } from "./sse.time";
 
 export default function Component() {
   return (
     <div>
-      <h1>EventSource</h1>
+      <h1>Typed Event Source</h1>
       <Counter />
     </div>
   );
@@ -11,17 +12,17 @@ export default function Component() {
 
 function Counter() {
   // Here `/sse/time` is the resource route returning an eventStream response
-  const time = useEventSource("/sse/time", { event: "time" });
+  const time = useTypedEventSource<TimeEventType>("/sse/time", {
+    //  ^?
+    event: "time",
+  });
 
   if (!time) return null;
 
   return (
-    <time dateTime={time}>
-      {new Date(time).toLocaleTimeString("en", {
-        minute: "2-digit",
-        second: "2-digit",
-        hour: "2-digit",
-      })}
-    </time>
+    <>
+      <pre>{time.toLocaleString()}</pre>
+      <pre>time instanceof Date: {time instanceof Date ? "true" : "false"}</pre>
+    </>
   );
 }
